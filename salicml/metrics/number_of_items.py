@@ -2,14 +2,17 @@ import pandas as pd
 import numpy as np
 
 
-class NumberOfItemsTrainer:
+class NumberOfItems:
     '''Trains a makes inferences about the nubmer of items from SALIC projects
     '''
+
     MEAN_KEY = 'mean'
     STD_KEY = 'std'
 
+
     def __init__(self):
-        pass
+        self.segments_trained = None
+
 
     def train(self, items_features):
         '''Receives features of SALIC projects in a matrix form. The matrix must be
@@ -32,33 +35,27 @@ class NumberOfItemsTrainer:
         COLUMNS = ['PRONAC', 'id_segmento', 'number_of_items']
         items_df = pd.DataFrame(items_features, columns=COLUMNS)
 
-        segments_trained = dict()
+        self.segments_trained = dict()
 
         segments_groups = items_df.groupby(['id_segmento'])
         for segment, segment_group in segments_groups:
             number_of_items_array = segment_group.number_of_items.values
             segment_trained = self._train_segment(number_of_items_array)
 
-            segments_trained[segment] = segment_trained
+            self.segments_trained[segment] = segment_trained
 
-        return segments_trained
+
+    def make_inference(self, pronac, id_segment):
+        pass
+
 
     def _train_segment(self, segment_features):
         '''Sets the mean and standard deviation from an array of features
-        (number of items) and returns it as a dictionary'''
+        (number_of_items) and returns it as a dictionary'''
 
         mean = np.mean(segment_features)
         std = np.std(segment_features)
 
-        result = {NumberOfItemsTrainer.MEAN_KEY: mean,
-                  NumberOfItemsTrainer.STD_KEY: std}
+        result = {NumberOfItems.MEAN_KEY: mean,
+                  NumberOfItems.STD_KEY: std}
         return result
-
-
-class NumberOfItemsModel():
-
-    def __init__(self, model):
-        pass
-
-    def make_inference(self, pronac, id_segment):
-        pass
