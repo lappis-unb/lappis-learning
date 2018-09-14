@@ -1,10 +1,12 @@
 import pandas as pd
 import numpy as np
 
+from salicml.models import gaussian_outlier
 
-class MetricNumberOfItems:
-    '''Trains a makes inferences about the nubmer of items from SALIC projects
-    '''
+
+class NumberOfItemsModel:
+    '''Trains a model and makes inferences on that model about the nubmer of
+    items from SALIC projects'''
 
     MEAN_KEY = 'mean'
     STD_KEY = 'std'
@@ -17,7 +19,7 @@ class MetricNumberOfItems:
     def train(self, items_features):
         '''Receives features of SALIC projects in a matrix form. The matrix must be
         a python list of python lists, where each inner list represents a row in
-        the matrix. The first row must be names of the columns.
+        the matrix.
 
         Matrix format:
         The order of the elements of the inner list must be:
@@ -45,8 +47,23 @@ class MetricNumberOfItems:
             self.segments_trained[segment] = segment_trained
 
 
-    def make_inference(self, pronac, id_segment):
-        pass
+    def make_inference(self, number_of_items, id_segment):
+        segment_mean = \
+            self.segments_trained[id_segment][NumberOfItemsModel.MEAN_KEY]
+        segment_std = \
+            self.segments_trained[id_segment][NumberOfItemsModel.STD_KEY]
+
+        outlier = gaussian_outlier.is_outlier(number_of_items, segment_mean,
+                                              segment_std)
+
+        maximum_expected = \
+            gaussian_outlier.maximum_expected_value(segment_mean, segment_std)
+
+        result = {
+            'is_outlier': outlier,
+            'maximum_expetected':maximum_expected,
+        }
+        return result
 
 
     def _train_segment(self, segment_features):
@@ -56,6 +73,6 @@ class MetricNumberOfItems:
         mean = np.mean(segment_features)
         std = np.std(segment_features)
 
-        result = {MetricNumberOfItems.MEAN_KEY: mean,
-                  MetricNumberOfItems.STD_KEY: std}
+        result = {NumberOfItemsModel.MEAN_KEY: mean,
+                  NumberOfItemsModel.STD_KEY: std}
         return result
