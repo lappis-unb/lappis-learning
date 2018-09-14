@@ -11,6 +11,9 @@ class NumberOfItemsModel:
     MEAN_KEY = 'mean'
     STD_KEY = 'std'
 
+    IS_OUTLIER_KEY = 'is_outlier'
+    MAX_EXPECTED_KEY = 'maximum_expected'
+
 
     def __init__(self):
         self.segments_trained = None
@@ -47,7 +50,9 @@ class NumberOfItemsModel:
             self.segments_trained[segment] = segment_trained
 
 
-    def make_inference(self, number_of_items, id_segment):
+    def is_outlier(self, number_of_items, id_segment):
+        '''Returns wheter the given number of items is an outlier for the given
+        segment. '''
         segment_mean = \
             self.segments_trained[id_segment][NumberOfItemsModel.MEAN_KEY]
         segment_std = \
@@ -60,8 +65,8 @@ class NumberOfItemsModel:
             gaussian_outlier.maximum_expected_value(segment_mean, segment_std)
 
         result = {
-            'is_outlier': outlier,
-            'maximum_expetected':maximum_expected,
+            NumberOfItemsModel.IS_OUTLIER_KEY: outlier,
+            NumberOfItemsModel.MEAN_KEY: maximum_expected,
         }
         return result
 
