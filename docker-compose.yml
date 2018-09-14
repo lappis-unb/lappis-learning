@@ -14,7 +14,7 @@ services:
       - LC_ALL=C.UTF-8
       - PYTHONIOENCODING=utf-8
       - DB_HOST=salic_db
-      - DB_PORT=1435
+      - DB_PORT=
       - DB_USER=
       - DB_PASSWORD=
 

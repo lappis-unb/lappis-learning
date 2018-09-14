@@ -1,6 +1,6 @@
 import unittest
 
-from salicml.metrics.number_of_items import NumberOfItems
+from salicml.metrics.number_of_items import MetricNumberOfItems
 
 
 class TestNumberOfItems(unittest.TestCase):
@@ -11,7 +11,7 @@ class TestNumberOfItems(unittest.TestCase):
                           ['000003', 'B', 2], ['000004', 'B', 20],
                           ['000005', 'C', 3],]
 
-        number_of_items = NumberOfItems()
+        number_of_items = MetricNumberOfItems()
         number_of_items.train(items_features)
 
         self.assertEqual(3, len(number_of_items.segments_trained))

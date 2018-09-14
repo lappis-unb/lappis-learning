@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 
-class NumberOfItems:
+class MetricNumberOfItems:
     '''Trains a makes inferences about the nubmer of items from SALIC projects
     '''
 
@@ -56,6 +56,6 @@ class NumberOfItems:
         mean = np.mean(segment_features)
         std = np.std(segment_features)
 
-        result = {NumberOfItems.MEAN_KEY: mean,
-                  NumberOfItems.STD_KEY: std}
+        result = {MetricNumberOfItems.MEAN_KEY: mean,
+                  MetricNumberOfItems.STD_KEY: std}
         return result
