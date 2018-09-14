@@ -3,7 +3,7 @@ import unittest
 from salicml.metrics.number_of_items import MetricNumberOfItems
 
 
-class TestNumberOfItems(unittest.TestCase):
+class TestMetricNumberOfItems(unittest.TestCase):
 
 
     def test_train(self):
