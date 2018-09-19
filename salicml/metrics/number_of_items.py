@@ -66,7 +66,7 @@ class NumberOfItemsModel:
 
         result = {
             NumberOfItemsModel.IS_OUTLIER_KEY: outlier,
-            NumberOfItemsModel.MEAN_KEY: maximum_expected,
+            NumberOfItemsModel.MAX_EXPECTED_KEY: maximum_expected,
         }
         return result
 
