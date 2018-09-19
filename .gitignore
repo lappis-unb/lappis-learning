@@ -1,3 +1,6 @@
+### Salic-ML files
+salicml/trainings/
+
 ### Data files maintained by FTP server
 data/external/*
 !data/external/.gitkeep
