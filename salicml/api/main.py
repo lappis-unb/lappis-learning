@@ -18,7 +18,7 @@ app = Flask(__name__)
 app.json_encoder = CustomJSONEncoder
 
 middleware = Middleware()
-middleware.train_all()
+middleware.load_all()
 
 
 @app.route('/metric/number_of_itens/<int:pronac>', methods=['GET'])
@@ -26,6 +26,3 @@ def get_metric_number_of_items(pronac):
     result = middleware.get_metric_number_of_items(pronac)
     return jsonify(result), 200
 
-
-if __name__ == '__main__':
-    app.run(debug = True)

@@ -78,7 +78,10 @@ class NumberOfItemsModel:
 
 
     def load(self, file_path, on_error_callback = None):
-        self.segments_trained = self.storage.load(file_path, on_error_callback)
+        segments_trained = self.storage.load(file_path, on_error_callback)
+
+        if segments_trained:
+            self.segments_trained = segments_trained
 
 
     def _train_segment(self, segment_features):

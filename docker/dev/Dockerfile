@@ -28,5 +28,6 @@ RUN python3 setup.py develop
 ADD . /salic-ml/
 
 EXPOSE 8080
+ENV FLASK_ENV=development
 ENV FLASK_APP=/salic-ml/salicml/api/main.py
-CMD ["flask", "run", "--host=0.0.0.0", "--port=8080"]
+CMD ["flask", "run", "--host=0.0.0.0", "--port=8080", "--debugger"]

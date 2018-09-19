@@ -25,7 +25,12 @@ class Middleware:
 
 
     def load_number_of_items(self):
-        self.number_of_items.load(Middleware.TRAIN_NUMBER_OF_METRICS_PATH)
+        self.number_of_items.load(Middleware.TRAIN_NUMBER_OF_METRICS_PATH,
+                                  self.on_load_number_of_items_error)
+
+
+    def on_load_number_of_items_error(self):
+        self.train_number_of_items()
 
 
     def train_number_of_items(self, save=True):
