@@ -17,6 +17,8 @@ services:
       - DB_PORT=
       - DB_USER=
       - DB_PASSWORD=
+    ports:
+      - '8080:8080'
 
   salic_db:
     image: lappis/openconnect-globalprotect
