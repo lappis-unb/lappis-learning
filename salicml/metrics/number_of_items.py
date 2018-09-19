@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 
 from salicml.models import gaussian_outlier
+from salicml.utils.storage import Storage
 
 
 class NumberOfItemsModel:
@@ -16,6 +17,7 @@ class NumberOfItemsModel:
 
 
     def __init__(self):
+        self.storage = Storage()
         self.segments_trained = None
 
 
@@ -69,6 +71,14 @@ class NumberOfItemsModel:
             NumberOfItemsModel.MAX_EXPECTED_KEY: maximum_expected,
         }
         return result
+
+
+    def save(self, file_path):
+        self.storage.save(file_path, self.segments_trained)
+
+
+    def load(self, file_path, on_error_callback = None):
+        self.segments_trained = self.storage.load(file_path, on_error_callback)
 
 
     def _train_segment(self, segment_features):
