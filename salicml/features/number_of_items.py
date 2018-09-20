@@ -3,7 +3,6 @@ import pandas as pd
 
 class FeatureNumberOfItems:
 
-
     def __init__(self):
         pass
 

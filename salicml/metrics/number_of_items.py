@@ -1,12 +1,12 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from salicml.models import gaussian_outlier
 from salicml.utils.storage import Storage
 
 
 class NumberOfItemsModel:
-    '''Trains a model and makes inferences on that model about the nubmer of
+    '''Trains a model and makes inferences on that model about the number of
     items from SALIC projects'''
 
     MEAN_KEY = 'mean'
@@ -15,16 +15,14 @@ class NumberOfItemsModel:
     IS_OUTLIER_KEY = 'is_outlier'
     MAX_EXPECTED_KEY = 'maximum_expected'
 
-
     def __init__(self):
         self.storage = Storage()
         self.segments_trained = None
 
-
     def train(self, items_features):
-        '''Receives features of SALIC projects in a matrix form. The matrix must be
-        a python list of python lists, where each inner list represents a row in
-        the matrix.
+        '''Receives features of SALIC projects in a matrix form. The matrix
+        must be a python list of python lists, where each inner list represents
+        a row in the matrix.
 
         Matrix format:
         The order of the elements of the inner list must be:
@@ -51,7 +49,6 @@ class NumberOfItemsModel:
 
             self.segments_trained[segment] = segment_trained
 
-
     def is_outlier(self, number_of_items, id_segment):
         '''Returns wheter the given number of items is an outlier for the given
         segment. '''
@@ -72,17 +69,14 @@ class NumberOfItemsModel:
         }
         return result
 
-
     def save(self, file_path):
         self.storage.save(file_path, self.segments_trained)
 
-
-    def load(self, file_path, on_error_callback = None):
+    def load(self, file_path, on_error_callback=None):
         segments_trained = self.storage.load(file_path, on_error_callback)
 
         if segments_trained:
             self.segments_trained = segments_trained
-
 
     def _train_segment(self, segment_features):
         '''Sets the mean and standard deviation from an array of features

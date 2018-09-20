@@ -19,7 +19,6 @@ class TestFeatureNumberOfItems(unittest.TestCase):
                             ['012345', '2A', 124],
                             ['012345', '2A', 125], ]
 
-
     def test_get_one_pronac_number_of_items(self):
         feature = FeatureNumberOfItems()
         number_of_items = feature.get_pronac_number_of_items(self.pronac_items)
