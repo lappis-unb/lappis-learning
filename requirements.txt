@@ -1,0 +1,9 @@
+click
+flask
+ipdb
+ipython
+numpy
+pandas
+pyodbc
+pytest
+scipy
