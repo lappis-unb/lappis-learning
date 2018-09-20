@@ -1,8 +1,7 @@
 stages:
   - build
   # - deploy
-  # - test
-  - flake8
+  - test
 
 gitlab-build:
   image: docker:17.04-git
@@ -23,10 +22,17 @@ gitlab-build:
 
 flake:
   image: python:alpine
-  stage: flake8
+  stage: test
   script:
     - pip3 install flake8
     - flake8 salicml/
+
+test:
+  image: python:alpine
+  stage: test
+  script:
+    - pip3 install -r requirements.txt
+    - pytest -s -v
 
 # deploy to development:
 #   stage: deploy
