@@ -1,0 +1,39 @@
+stages:
+  - build
+  # - deploy
+  # - test
+  - flake8
+
+gitlab-build:
+  image: docker:17.04-git
+  services:
+    - docker:17.04-dind
+  stage: build
+  variables:
+    SALICML_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/salic-ml:$CI_BUILD_REF_NAME
+  script:
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+    - docker build -f docker/stable_deploy/Dockerfile -t $SALICML_RELEASE_IMAGE .
+    - docker tag $SALICML_RELEASE_IMAGE "$CI_REGISTRY_IMAGE/salic-ml:develop"
+    - docker push $SALICML_RELEASE_IMAGE
+    - docker push "$CI_REGISTRY_IMAGE/salic-ml:develop"
+  only:
+    - develop
+  environment: docker
+
+  flake:
+    image: python:alpine
+    stage: flake8
+    script:
+      - flake8 salicml/
+
+# deploy to development:
+#   stage: deploy
+#   image: cdrx/rancher-gitlab-deploy
+#   environment: develop
+#   script:
+#     - upgrade --environment $RANCHER_ENVIRONMENT --stack $RANCHER_STACK --service noosfero-fga --debug
+#   only:
+#     - develop
+#   tags:
+#     - docker
