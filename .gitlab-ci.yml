@@ -21,11 +21,11 @@ gitlab-build:
     - develop
   environment: docker
 
-  flake:
-    image: python:alpine
-    stage: flake8
-    script:
-      - flake8 salicml/
+flake:
+  image: python:alpine
+  stage: flake8
+  script:
+    - flake8 salicml/
 
 # deploy to development:
 #   stage: deploy
