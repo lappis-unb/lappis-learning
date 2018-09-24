@@ -3,7 +3,7 @@ stages:
   - deploy
   - test
 
-gitlab-build:
+gitlab-build development:
   image: docker:17.04-git
   services:
     - docker:17.04-dind
@@ -19,6 +19,24 @@ gitlab-build:
   only:
     - develop
   environment: docker
+
+gitlab-build production:
+  image: docker:17.04-git
+  services:
+    - docker:17.04-dind
+  stage: build
+  variables:
+    SALICML_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/salic-ml:$CI_BUILD_REF_NAME
+  script:
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+    - docker build -f docker/prod/Dockerfile -t $SALICML_RELEASE_IMAGE .
+    - docker tag $SALICML_RELEASE_IMAGE "$CI_REGISTRY_IMAGE/salic-ml:prod"
+    - docker push $SALICML_RELEASE_IMAGE
+    - docker push "$CI_REGISTRY_IMAGE/salic-ml:prod"
+  only:
+    - master
+  environment: docker
+
 
 flake:
   image: python:alpine
@@ -38,13 +56,24 @@ test:
     - python3 setup.py develop
     - pytest -s -v
 
-# deploy to development:
-#   stage: deploy
-#   image: cdrx/rancher-gitlab-deploy
-#   environment: develop
-#   script:
-#     - upgrade --environment $RANCHER_ENVIRONMENT --stack $RANCHER_STACK --service noosfero-fga --debug
-#   only:
-#     - develop
-#   tags:
-#     - docker
+deploy to development:
+  stage: deploy
+  image: cdrx/rancher-gitlab-deploy
+  environment: develop
+  script:
+    - upgrade --environment $RANCHER_ENVIRONMENT --stack $RANCHER_STACK --service salic-ml --debug
+  only:
+    - develop
+  tags:
+    - docker
+
+deploy to production:
+  stage: deploy
+  image: cdrx/rancher-gitlab-deploy
+  environment: prod
+  script:
+    - upgrade --environment $RANCHER_ENVIRONMENT --stack $RANCHER_STACK --service salic-ml --debug
+  only:
+    - master
+  tags:
+    - docker
