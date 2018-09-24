@@ -16,6 +16,7 @@ class CustomJSONEncoder(JSONEncoder):
 
 app = Flask(__name__)
 app.json_encoder = CustomJSONEncoder
+app.config['JSON_AS_ASCII'] = False
 
 middleware = Middleware()
 middleware.load_all()

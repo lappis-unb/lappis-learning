@@ -4,6 +4,11 @@ from salicml.features.number_of_items import FeatureNumberOfItems
 from salicml.metrics.number_of_items import NumberOfItemsModel
 from salicml.data.data_source import DataSource
 
+from math import ceil
+
+
+def str_int(n):
+    return str(int(n))
 
 class NumberOfItemsMiddleware:
 
@@ -18,23 +23,28 @@ class NumberOfItemsMiddleware:
         self.number_of_items = NumberOfItemsModel()
 
     def fill_json(self, metric_result):
+
+        METRIC_GOOD = 'Metric-good'
+        METRIC_BAD = 'Metric-bad'
+
+        number_of_items = metric_result['number_of_items']
+        max_expected = metric_result[NumberOfItemsModel.MAX_EXPECTED_KEY]
+
         json = dict()
         json["name"]= 'itens_orcamentarios'
         json["name_title"]= 'Itens orçamentários'
         json["helper_text"]= "Compara a quantidade de itens deste projeto com a quantidade mais comum de itens em projetos do mesmo segmento"
-        json["value"]= '13'
-        json["value_text"]= "string"
-        json["value_is_valid"]= "booleano"
-        json["outlier_check"]= "string => podendo ser: Metric-bad || Metric-good"
+        json["value"]= number_of_items
+        json["value_is_valid"] = "True"
+        json["outlier_check"]= METRIC_GOOD if metric_result['is_outlier'] else METRIC_BAD
         json["type"]= "bar"
         json["bar"] = {
-            "interval_start": "Inteiro",
-            "interval_end": "Inteiro",
-            "interval": "Inteiro",
-            "max_value": "Inteiro"
+            "interval_start": 0,
+            "interval_end": int(ceil(max_expected)),
+            "interval": int(number_of_items),
+            "max_value": int(2.0 * ceil(max(max_expected, number_of_items))),
         }
-        json["reason"] = "string"
-
+        json["reason"] = ''
         return json
 
 
@@ -66,5 +76,6 @@ class NumberOfItemsMiddleware:
         _, id_segment, number_of_items = items_features[0]
 
         result = self.number_of_items.is_outlier(number_of_items, id_segment)
+        result['number_of_items'] = number_of_items
         result_json = self.fill_json(result)
         return result_json
