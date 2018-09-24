@@ -38,7 +38,7 @@ class DataSource:
         cursor.close()
         return data
 
-    def get_planilha_orcamentaria(self, columns):
+    def get_planilha_orcamentaria(self, columns, where=''):
         DB_COLUMN = \
             {'PRONAC': 'a.PRONAC',
              'idPlanilhaAprovacao': 'a.idPlanilhaAprovacao',
@@ -55,9 +55,13 @@ class DataSource:
                   'INNER JOIN SAC.dbo.Segmento s\n' \
                   'ON P.Segmento = s.Codigo\n' \
                   'INNER JOIN SAC.dbo.Area area\n' \
-                  'ON p.Area = area.Codigo;'
+                  'ON p.Area = area.Codigo'
 
         sql_query = select + from_db
+        if where:
+            where = '\n' + where
+        sql_query += (where + ';')
+
         return self.execute_query(sql_query)
 
     def get_pronac_segmento_number_of_items(self, pronac=''):
