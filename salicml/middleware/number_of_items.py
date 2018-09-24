@@ -2,13 +2,13 @@ import os
 
 from salicml.features.number_of_items import FeatureNumberOfItems
 from salicml.metrics.number_of_items import NumberOfItemsModel
-from salicml.data.data_source import DataSource
 
 from math import ceil
 
 
 def str_int(n):
     return str(int(n))
+
 
 class NumberOfItemsMiddleware:
 
@@ -31,13 +31,16 @@ class NumberOfItemsMiddleware:
         max_expected = metric_result[NumberOfItemsModel.MAX_EXPECTED_KEY]
 
         json = dict()
-        json["name"]= 'itens_orcamentarios'
-        json["name_title"]= 'Itens orçamentários'
-        json["helper_text"]= "Compara a quantidade de itens deste projeto com a quantidade mais comum de itens em projetos do mesmo segmento"
-        json["value"]= number_of_items
+        json["name"] = 'itens_orcamentarios'
+        json["name_title"] = 'Itens orçamentários'
+        json["helper_text"] = 'Compara a quantidade de itens deste projeto ' \
+                              'com a quantidade mais comum de itens em ' \
+                              'projetos do mesmo segmento'
+        json["value"] = number_of_items
         json["value_is_valid"] = "True"
-        json["outlier_check"]= METRIC_GOOD if metric_result['is_outlier'] else METRIC_BAD
-        json["type"]= "bar"
+        json["outlier_check"] = METRIC_GOOD if metric_result['is_outlier'] \
+            else METRIC_BAD
+        json["type"] = "bar"
         json["bar"] = {
             "interval_start": 0,
             "interval_end": int(ceil(max_expected)),
@@ -47,10 +50,10 @@ class NumberOfItemsMiddleware:
         json["reason"] = ''
         return json
 
-
     def load_number_of_items(self):
-        self.number_of_items.load(NumberOfItemsMiddleware.TRAIN_NUMBER_OF_METRICS_PATH,
-                                  self.on_load_number_of_items_error)
+        self.number_of_items.load(
+            NumberOfItemsMiddleware.TRAIN_NUMBER_OF_METRICS_PATH,
+            self.on_load_number_of_items_error)
 
     def on_load_number_of_items_error(self):
         self.train_number_of_items()
@@ -58,12 +61,14 @@ class NumberOfItemsMiddleware:
     def train_number_of_items(self, planilha_orcamentaria, save=True):
         feature = FeatureNumberOfItems()
 
-        items_features = feature.get_projects_number_of_items(planilha_orcamentaria)
+        items_features = feature.get_projects_number_of_items(
+            planilha_orcamentaria)
 
         self.number_of_items.train(items_features)
 
         if save:
-            self.number_of_items.save(NumberOfItemsMiddleware.TRAIN_NUMBER_OF_METRICS_PATH)
+            self.number_of_items.save(
+                NumberOfItemsMiddleware.TRAIN_NUMBER_OF_METRICS_PATH)
 
     def get_metric_number_of_items(self, pronac):
         feature = FeatureNumberOfItems()
