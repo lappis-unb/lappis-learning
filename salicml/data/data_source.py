@@ -1,17 +1,14 @@
-import pyodbc
 import os
+import pyodbc
 
 
 class DataSource:
 
-
     def __init__(self):
         self._database_connect()
 
-
     def __del__(self):
         self._database_disconnect()
-
 
     def _database_connect(self):
         db_credentials = {
@@ -25,16 +22,14 @@ class DataSource:
         db_parameters = (
             'DRIVER=FreeTDS;SERVER={0};PORT={1};DATABASE=;UID={2};PWD={3};\
              TDS_Version=8.0;'
-             .format(db_credentials['HOST'], db_credentials['PORT'],
-                     db_credentials['USER'], db_credentials['PASSWORD'])
+            .format(db_credentials['HOST'], db_credentials['PORT'],
+                    db_credentials['USER'], db_credentials['PASSWORD'])
         )
 
         self.db = pyodbc.connect(db_parameters)
 
-
     def _database_disconnect(self):
         self.db.close()
-
 
     def execute_query(self, query):
         cursor = self.db.cursor()
@@ -45,9 +40,9 @@ class DataSource:
 
     def get_planilha_orcamentaria(self, columns):
         DB_COLUMN = \
-        {'PRONAC': 'a.PRONAC',
-         'idPlanilhaAprovacao': 'a.idPlanilhaAprovacao',
-         'idSegmento': 'p.Segmento AS idSegmento', }
+            {'PRONAC': 'a.PRONAC',
+             'idPlanilhaAprovacao': 'a.idPlanilhaAprovacao',
+             'idSegmento': 'p.Segmento AS idSegmento', }
 
         select = 'SELECT '
         select += ','.join([DB_COLUMN[key] for key in columns])
@@ -81,4 +76,3 @@ class DataSource:
 
         else:
             return self.execute_query(query)
-

@@ -25,4 +25,3 @@ middleware.load_all()
 def get_metric_number_of_items(pronac):
     result = middleware.get_metric_number_of_items(pronac)
     return jsonify(result), 200
-

@@ -22,7 +22,7 @@ class TestMetricNumberOfItems(unittest.TestCase):
     def test_train(self):
         items_features = [['000001', 'A', 1], ['000002', 'A', 11],
                           ['000003', 'B', 2], ['000004', 'B', 20],
-                          ['000005', 'C', 3],]
+                          ['000005', 'C', 3], ]
 
         number_of_items = NumberOfItemsModel()
         number_of_items.train(items_features)

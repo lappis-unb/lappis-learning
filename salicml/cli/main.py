@@ -17,7 +17,6 @@ def train_number_of_items():
     middleware.train_number_of_items()
 
 
-
 @click.command()
 @click.option('--train', type=click.Choice(['all', 'number_of_items']))
 def main(train):
