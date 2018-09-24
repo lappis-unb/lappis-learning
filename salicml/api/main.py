@@ -2,7 +2,7 @@ import numpy
 from flask import Flask, jsonify
 from flask.json import JSONEncoder
 
-from salicml.middleware import Middleware
+from salicml.middleware.middleware import Middleware
 
 
 class CustomJSONEncoder(JSONEncoder):
