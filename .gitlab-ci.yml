@@ -1,7 +1,7 @@
 stages:
   - build
-  - deploy
   - test
+  - deploy
 
 gitlab-build development:
   image: docker:17.04-git
