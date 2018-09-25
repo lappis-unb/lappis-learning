@@ -1,13 +1,13 @@
 import click
 
-from salicml.middleware import Middleware
+from salicml.middleware.middleware import Middleware
 
 
 def train_all_metrics():
     print('Training all metrics')
 
     middleware = Middleware()
-    middleware.train_all()
+    middleware.train_all(True)
 
 
 def train_number_of_items():

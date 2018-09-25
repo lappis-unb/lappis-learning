@@ -25,9 +25,12 @@ ADD ./docker/odbcinst.ini /etc/odbcinst.ini
 RUN pip3 install -r requirements.txt
 RUN python3 setup.py develop
 
-ADD . /salic-ml/
-
 EXPOSE 8080
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+ENV PYTHONIOENCODING=utf-8
 ENV FLASK_ENV=development
 ENV FLASK_APP=/salic-ml/salicml/api/main.py
 CMD ["flask", "run", "--host=0.0.0.0", "--port=8080", "--debugger"]
+
+ADD . /salic-ml/
