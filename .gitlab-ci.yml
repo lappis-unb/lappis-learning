@@ -1,42 +1,29 @@
 stages:
-  - build
   - test
+  - build
   - deploy
 
-gitlab-build development:
+build:
   image: docker:17.04-git
   services:
     - docker:17.04-dind
   stage: build
   variables:
+    NGINX_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/nginx:$CI_BUILD_REF_NAME
     SALICML_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/salic-ml:$CI_BUILD_REF_NAME
   script:
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
-    - docker build -f docker/dev/Dockerfile -t $SALICML_RELEASE_IMAGE .
-    - docker tag $SALICML_RELEASE_IMAGE "$CI_REGISTRY_IMAGE/salic-ml:develop"
-    - docker push $SALICML_RELEASE_IMAGE
-    - docker push "$CI_REGISTRY_IMAGE/salic-ml:develop"
-  only:
-    - develop
-  environment: docker
-
-gitlab-build production:
-  image: docker:17.04-git
-  services:
-    - docker:17.04-dind
-  stage: build
-  variables:
-    SALICML_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/salic-ml:$CI_BUILD_REF_NAME
-  script:
-    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+    - docker build -f docker/prod/Dockerfile_nginx -t $NGINX_RELEASE_IMAGE .
+    - docker tag $NGINX_RELEASE_IMAGE "$CI_REGISTRY_IMAGE/nginx:latest"
+    - docker push $NGINX_RELEASE_IMAGE
+    - docker push "$CI_REGISTRY_IMAGE/nginx:latest"
     - docker build -f docker/prod/Dockerfile -t $SALICML_RELEASE_IMAGE .
-    - docker tag $SALICML_RELEASE_IMAGE "$CI_REGISTRY_IMAGE/salic-ml:prod"
+    - docker tag $SALICML_RELEASE_IMAGE "$CI_REGISTRY_IMAGE/salic-ml:latest"
     - docker push $SALICML_RELEASE_IMAGE
-    - docker push "$CI_REGISTRY_IMAGE/salic-ml:prod"
+    - docker push "$CI_REGISTRY_IMAGE/salic-ml:latest"
   only:
-    - master
+    - /develop|homolog|master/
   environment: docker
-
 
 flake:
   image: python:alpine

@@ -1,0 +1,42 @@
+version: '2'
+
+services:
+  salic_ml:
+    build:
+      context: .
+      dockerfile: ./docker/prod/Dockerfile
+    # image: "registry.gitlab.com/lappis-unb/projects/lappis-learning/salic-ml:docker_production"
+    depends_on:
+      - salic_db
+    environment:
+      - DB_HOST=salic_db
+      - DB_PORT=1435
+      - DB_USER=
+      - DB_PASSWORD=
+    volumes:
+      - "trainings:/salic-ml/salicml/middleware/trainings"
+
+  salic_db:
+    image: lappis/openconnect-globalprotect
+    environment:
+      - VPN_PASSWORD=
+      - VPN_SERVER=
+      - VPN_USER=
+      - SERVICE_IP=
+      - SERVICE_PORT=
+    privileged: true
+    cap_add:
+      - NET-ADMIN
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/prod/Dockerfile_nginx
+    # image: "registry.gitlab.com/lappis-unb/projects/lappis-learning/nginx:docker_production"
+    ports:
+      - "80:80"
+    depends_on:
+      - salic_ml
+
+volumes:
+  trainings:
