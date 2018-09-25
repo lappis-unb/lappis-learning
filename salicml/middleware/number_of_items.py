@@ -2,6 +2,7 @@ import os
 
 from salicml.features.number_of_items import FeatureNumberOfItems
 from salicml.metrics.number_of_items import NumberOfItemsModel
+from salicml.middleware.exceptions import TraningNotFound
 
 from math import ceil
 
@@ -56,7 +57,7 @@ class NumberOfItemsMiddleware:
             self.on_load_number_of_items_error)
 
     def on_load_number_of_items_error(self):
-        self.train_number_of_items()
+        raise TraningNotFound('Number of Items training not found')
 
     def train_number_of_items(self, planilha_orcamentaria, save=True):
         feature = FeatureNumberOfItems()
