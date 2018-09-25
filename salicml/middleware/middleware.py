@@ -2,6 +2,7 @@ import os
 
 from salicml.data.data_source import DataSource
 from salicml.middleware.number_of_items import NumberOfItemsMiddleware
+from salicml.middleware.exceptions import TraningNotFound
 
 
 class Middleware:
@@ -19,13 +20,18 @@ class Middleware:
         self._data_source = DataSource()
 
     def train_all(self, save=True):
-        planilha_orcamentaria = self._data_source.get_planilha_orcamentaria(
-            columns=NumberOfItemsMiddleware.COLUMNS)
+        planilha_orcamentaria = self._get_planilha_orcamentaria()
+
         self.number_of_items_middleware.train_number_of_items(
             planilha_orcamentaria, save)
 
     def load_all(self):
-        self.number_of_items_middleware.load_number_of_items()
+        try:
+            self.number_of_items_middleware.load_number_of_items()
+        except:
+            planilha_orcamentaria = self._get_planilha_orcamentaria()
+            self.number_of_items_middleware.train_number_of_items(
+                planilha_orcamentaria, True)
 
     def _init_number_of_items_middleware(self):
         self.number_of_items_middleware = NumberOfItemsMiddleware(
@@ -34,3 +40,10 @@ class Middleware:
     def get_metric_number_of_items(self, pronac):
         return self.number_of_items_middleware.get_metric_number_of_items(
             pronac)
+
+    def _get_planilha_orcamentaria(self):
+        name = 'planilha_orcamentaria'
+        if not hasattr(self, name):
+            self.planilha_orcamentaria = self._data_source. \
+            get_planilha_orcamentaria(columns=NumberOfItemsMiddleware.COLUMNS)
+        return self.planilha_orcamentaria
