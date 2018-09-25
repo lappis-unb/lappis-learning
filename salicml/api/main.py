@@ -21,8 +21,7 @@ app.config['JSON_AS_ASCII'] = False
 middleware = Middleware()
 middleware.load_all()
 
-
-@app.route('/metric/number_of_itens/<int:pronac>', methods=['GET'])
+@app.route('/metric/number_of_items/<int:pronac>', methods=['GET'])
 def get_metric_number_of_items(pronac):
     result = middleware.get_metric_number_of_items(pronac)
     return jsonify(result), 200

@@ -1,10 +1,13 @@
 import os
+from math import ceil
+
 
 from salicml.features.number_of_items import FeatureNumberOfItems
 from salicml.metrics.number_of_items import NumberOfItemsModel
 from salicml.middleware.exceptions import TraningNotFound
+from salicml.middleware import constants
 
-from math import ceil
+
 
 
 class NumberOfItemsMiddleware:
@@ -12,9 +15,7 @@ class NumberOfItemsMiddleware:
     It gets all necessary raw data from DataSource, extracts the feature
     NumberOfItems, and makes inference on that feature'''
 
-    FILE_PATH = os.path.dirname(os.path.realpath(__file__))
-    TRAIN_FOLDER = os.path.join(FILE_PATH, 'trainings')
-    TRAIN_NUMBER_OF_METRICS_PATH = os.path.join(TRAIN_FOLDER,
+    TRAIN_NUMBER_OF_METRICS_PATH = os.path.join(constants.TRAIN_FOLDER,
                                                 'number_of_metrics.pickle')
     COLUMNS = ['PRONAC', 'idSegmento', 'idPlanilhaAprovacao', ]
 
