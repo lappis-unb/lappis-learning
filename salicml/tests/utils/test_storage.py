@@ -2,7 +2,7 @@ import os
 import shutil
 import unittest
 
-from salicml.utils.storage import Storage
+from salicml.utils import storage
 
 
 class TestStorage(unittest.TestCase):
@@ -18,14 +18,12 @@ class TestStorage(unittest.TestCase):
 
     def test_save(self):
         data = 'test'
-        storage = Storage()
         storage.save(TestStorage.TEST_FILE, data)
 
         self.assertTrue(os.path.isfile(TestStorage.TEST_FILE))
 
     def test_load(self):
         data = 'test'
-        storage = Storage()
         storage.save(TestStorage.TEST_FILE, data)
 
         loaded_data = storage.load(TestStorage.TEST_FILE)
@@ -36,7 +34,6 @@ class TestStorage(unittest.TestCase):
         def error_callback():
             self.has_error = True
 
-        storage = Storage()
         storage.load(TestStorage.TEST_FILE, error_callback)
 
         self.assertTrue(self.has_error)
