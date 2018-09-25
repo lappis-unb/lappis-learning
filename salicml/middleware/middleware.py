@@ -1,16 +1,14 @@
-import os
-
 from salicml.data.data_source import DataSource
 from salicml.middleware.number_of_items import NumberOfItemsMiddleware
 from salicml.middleware.exceptions import TraningNotFound
 
 
 class Middleware:
-    FILE_PATH = os.path.dirname(os.path.realpath(__file__))
-    TRAIN_FOLDER = os.path.join(FILE_PATH, 'trainings')
-    TRAIN_NUMBER_OF_METRICS_PATH = os.path.join(TRAIN_FOLDER,
-                                                'number_of_metrics.pickle')
-    COLUMNS = ['PRONAC', 'idSegmento', 'idPlanilhaAprovacao', ]
+    '''This class is responsable for getting raw data from DataSource, calling
+    feature extraction processes on that raw data and training or making
+    inferences on the extracted features. The training or inference processes
+    are expected to be used on an external service, e.g Flask or Django web
+    servers or CLI.'''
 
     def __init__(self):
         self._init_data_source()
@@ -20,15 +18,20 @@ class Middleware:
         self._data_source = DataSource()
 
     def train_all(self, save=True):
+        '''Trains the models for all implemented feature-middlewares. It will
+        try to load the stored training models. If there's no training stored,
+        it will train the model and store it if save=True. '''
         planilha_orcamentaria = self._get_planilha_orcamentaria()
 
         self.number_of_items_middleware.train_number_of_items(
             planilha_orcamentaria, save)
 
     def load_all(self):
+        '''Tries to load the training model from disk. If the training model is
+        not foundon disk, it will be trained and saved.'''
         try:
             self.number_of_items_middleware.load_number_of_items()
-        except:
+        except TraningNotFound:
             planilha_orcamentaria = self._get_planilha_orcamentaria()
             self.number_of_items_middleware.train_number_of_items(
                 planilha_orcamentaria, True)
@@ -42,8 +45,10 @@ class Middleware:
             pronac)
 
     def _get_planilha_orcamentaria(self):
+        '''Singleton implementation of planilha orcamentaria. '''
         name = 'planilha_orcamentaria'
         if not hasattr(self, name):
             self.planilha_orcamentaria = self._data_source. \
-            get_planilha_orcamentaria(columns=NumberOfItemsMiddleware.COLUMNS)
+                get_planilha_orcamentaria(
+                    columns=NumberOfItemsMiddleware.COLUMNS)
         return self.planilha_orcamentaria
