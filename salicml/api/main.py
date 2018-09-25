@@ -27,9 +27,10 @@ app.logger.setLevel(logging.DEBUG)
 
 middleware = Middleware()
 middleware.train_all()
-#middleware.load_all()
+# middleware.load_all()
 
 app.logger.info('Setting up Middleware\n\n\n')
+
 
 @app.route('/metric/number_of_items/<int:pronac>', methods=['GET'])
 def get_metric_number_of_items(pronac):

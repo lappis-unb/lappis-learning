@@ -10,6 +10,7 @@ def save(file_path, data):
     with open(file_path, 'wb') as output_file:
         pickle.dump(data, output_file, pickle.DEFAULT_PROTOCOL)
 
+
 def load(file_path, on_error_callback=None):
     try:
         with open(file_path, 'rb') as input_file:

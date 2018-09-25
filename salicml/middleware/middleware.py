@@ -10,6 +10,7 @@ from salicml.utils import storage
 
 log = logging.getLogger('flask.app.middleware').debug
 
+
 class Middleware:
     '''This class is responsable for getting raw data from DataSource, calling
     feature extraction processes on that raw data and training or making
@@ -21,7 +22,6 @@ class Middleware:
         self._init_data_source()
         self._init_number_of_items_middleware()
         log('Initing Middleware\n')
-
 
     def _init_data_source(self):
         self._data_source = DataSource()
@@ -59,7 +59,6 @@ class Middleware:
         PLANILHA_ORCAMENTARIA = \
             os.path.join(constants.TRAIN_FOLDER, name + '.pickle')
 
-
         download = True
         use_attr = False
         use_file = False
@@ -78,7 +77,7 @@ class Middleware:
             log('Downloading {}.'.format(name))
             planilha_orcamentaria = self._data_source. \
                 get_planilha_orcamentaria(
-                columns=NumberOfItemsMiddleware.COLUMNS)
+                    columns=NumberOfItemsMiddleware.COLUMNS)
 
             storage.save(PLANILHA_ORCAMENTARIA, planilha_orcamentaria)
         elif use_attr:
@@ -90,4 +89,3 @@ class Middleware:
 
         self.planilha_orcamentaria = planilha_orcamentaria
         return planilha_orcamentaria
-
