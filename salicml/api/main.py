@@ -1,3 +1,6 @@
+import logging
+import sys
+
 import numpy
 from flask import Flask, jsonify
 from flask.json import JSONEncoder
@@ -18,8 +21,15 @@ app = Flask(__name__)
 app.json_encoder = CustomJSONEncoder
 app.config['JSON_AS_ASCII'] = False
 
+handler = logging.StreamHandler(sys.stdout)
+app.logger.addHandler(handler)
+app.logger.setLevel(logging.DEBUG)
+
 middleware = Middleware()
-middleware.load_all()
+middleware.train_all()
+#middleware.load_all()
+
+app.logger.info('Setting up Middleware\n\n\n')
 
 @app.route('/metric/number_of_items/<int:pronac>', methods=['GET'])
 def get_metric_number_of_items(pronac):
