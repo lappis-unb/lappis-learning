@@ -1,6 +1,10 @@
+import os
+
 from salicml.data.data_source import DataSource
 from salicml.middleware.number_of_items import NumberOfItemsMiddleware
 from salicml.middleware.exceptions import TraningNotFound
+from salicml.middleware import constants
+from salicml.utils import storage
 
 
 class Middleware:
@@ -44,11 +48,40 @@ class Middleware:
         return self.number_of_items_middleware.get_metric_number_of_items(
             pronac)
 
-    def _get_planilha_orcamentaria(self):
+    def _get_planilha_orcamentaria(self, use_cache=True):
         '''Singleton implementation of planilha orcamentaria. '''
         name = 'planilha_orcamentaria'
-        if not hasattr(self, name):
-            self.planilha_orcamentaria = self._data_source. \
+        PLANILHA_ORCAMENTARIA = \
+            os.path.join(constants.TRAIN_FOLDER, name + '.pickle')
+
+
+        download = True
+        use_attr = False
+        use_file = False
+
+        if use_cache:
+            use_attr = hasattr(self, name)
+            if not use_attr:
+                use_file = os.path.exists(PLANILHA_ORCAMENTARIA)
+
+            if use_attr or use_file:
+                download = False
+
+        planilha_orcamentaria = None
+        if download:
+            print('Downloading {}'.format(name))
+            planilha_orcamentaria = self._data_source. \
                 get_planilha_orcamentaria(
-                    columns=NumberOfItemsMiddleware.COLUMNS)
-        return self.planilha_orcamentaria
+                columns=NumberOfItemsMiddleware.COLUMNS)
+
+            storage.save(PLANILHA_ORCAMENTARIA, planilha_orcamentaria)
+        elif use_attr:
+            print('Using attr {}'.format(name))
+            planilha_orcamentaria = self.planilha_orcamentaria
+        elif use_file:
+            print('Using file {}'.format(name))
+            planilha_orcamentaria = storage.load(PLANILHA_ORCAMENTARIA)
+
+        self.planilha_orcamentaria = planilha_orcamentaria
+        return planilha_orcamentaria
+
