@@ -1,6 +1,4 @@
-from math import ceil
 import os
-
 
 from salicml.features.number_of_items import FeatureNumberOfItems
 from salicml.metrics.number_of_items import NumberOfItemsModel
@@ -20,36 +18,6 @@ class NumberOfItemsMiddleware:
     def __init__(self, data_source):
         self._data_source = data_source
         self.number_of_items = NumberOfItemsModel()
-
-    def fill_json(self, metric_result):
-        '''Add keys on the metric inference result json so the new json is
-        ready to be consumed by a front-end'''
-
-        METRIC_GOOD = 'Metric-good'
-        METRIC_BAD = 'Metric-bad'
-
-        number_of_items = metric_result['number_of_items']
-        max_expected = metric_result[NumberOfItemsModel.MAX_EXPECTED_KEY]
-
-        json = dict()
-        json["name"] = 'itens_orcamentarios'
-        json["name_title"] = 'Itens orçamentários'
-        json["helper_text"] = 'Compara a quantidade de itens deste projeto ' \
-                              'com a quantidade mais comum de itens em ' \
-                              'projetos do mesmo segmento'
-        json["value"] = number_of_items
-        json["value_is_valid"] = "True"
-        json["outlier_check"] = METRIC_GOOD if metric_result['is_outlier'] \
-            else METRIC_BAD
-        json["type"] = "bar"
-        json["bar"] = {
-            "interval_start": 0,
-            "interval_end": int(ceil(max_expected)),
-            "interval": int(number_of_items),
-            "max_value": int(2.0 * ceil(max(max_expected, number_of_items))),
-        }
-        json["reason"] = ''
-        return json
 
     def load_number_of_items(self):
         '''Tries to load the training model for the feature'''
@@ -93,7 +61,3 @@ class NumberOfItemsMiddleware:
         result = self.number_of_items.is_outlier(number_of_items, id_segment)
         result['number_of_items'] = number_of_items
         return result
-
-
-def str_int(n):
-    return str(int(n))
