@@ -60,4 +60,5 @@ class NumberOfItemsMiddleware:
 
         result = self.number_of_items.is_outlier(number_of_items, id_segment)
         result['number_of_items'] = number_of_items
+        result['minimum_expected'] = 0
         return result
