@@ -1,7 +1,7 @@
 import logging
 import os
 
-from salicml.data.data_source import DataSource
+from salicml.data_source.data_source_db import DataSourceDb
 from salicml.middleware.number_of_items import NumberOfItemsMiddleware
 from salicml.middleware.exceptions import TraningNotFound
 from salicml.middleware import constants
@@ -18,13 +18,13 @@ class Middleware:
     are expected to be used on an external service, e.g Flask or Django web
     servers or CLI.'''
 
-    def __init__(self):
-        self._init_data_source()
+    def __init__(self, data_source=None):
+        self._init_data_source(data_source)
         self._init_number_of_items_middleware()
         log('Initing Middleware\n')
 
-    def _init_data_source(self):
-        self._data_source = DataSource()
+    def _init_data_source(self, data_source):
+        self._data_source = data_source if data_source else DataSourceDb()
 
     def train_all(self, save=True):
         '''Trains the models for all implemented feature-middlewares. It will
@@ -37,7 +37,7 @@ class Middleware:
 
     def load_all(self):
         '''Tries to load the training model from disk. If the training model is
-        not foundon disk, it will be trained and saved.'''
+        not found on disk, it will be trained and saved.'''
         try:
             self.number_of_items_middleware.load_number_of_items()
         except TraningNotFound:

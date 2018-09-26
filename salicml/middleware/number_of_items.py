@@ -50,9 +50,8 @@ class NumberOfItemsMiddleware:
         given pronac. The pronac's data will downloaded from the SALIC database
         so its guaranted to be up-to-date.'''
         feature = FeatureNumberOfItems()
-        where = 'WHERE a.PRONAC = \'{0}\''.format(pronac)
         planilha_orcamentaria = self._data_source.get_planilha_orcamentaria(
-            columns=NumberOfItemsMiddleware.COLUMNS, where=where)
+            columns=NumberOfItemsMiddleware.COLUMNS, pronac=pronac)
         items_features = feature.get_projects_number_of_items(
             planilha_orcamentaria)
 
