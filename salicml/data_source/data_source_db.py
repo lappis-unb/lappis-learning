@@ -36,6 +36,7 @@ class DataSourceDb(DataSourceABC):
         spreadsheet = self.db_connector.execute_query(sql_query)
         return spreadsheet
 
+
 class DataSourceMock(DataSourceABC):
     def __init__(self, planilha_orcamentaria=None):
         self._planilha_orcamentaria = pd.DataFrame(planilha_orcamentaria)
