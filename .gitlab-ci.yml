@@ -48,7 +48,8 @@ deploy to development:
   image: cdrx/rancher-gitlab-deploy
   environment: develop
   script:
-    - upgrade --environment $RANCHER_ENVIRONMENT --stack $RANCHER_STACK --service salic-ml --debug
+    - upgrade --environment $RANCHER_ENVIRONMENT --stack $RANCHER_STACK --service salicml --debug
+    - upgrade --environment $RANCHER_ENVIRONMENT --stack $RANCHER_STACK --service nginx --debug
   only:
     - develop
   tags:
@@ -59,7 +60,8 @@ deploy to production:
   image: cdrx/rancher-gitlab-deploy
   environment: prod
   script:
-    - upgrade --environment $RANCHER_ENVIRONMENT --stack $RANCHER_STACK --service salic-ml --debug
+    - upgrade --environment $RANCHER_ENVIRONMENT --stack $RANCHER_STACK --service salicml --debug
+    - upgrade --environment $RANCHER_ENVIRONMENT --stack $RANCHER_STACK --service nginx --debug
   only:
     - master
   tags:
