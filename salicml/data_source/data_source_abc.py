@@ -15,7 +15,7 @@ class DataSourceABC(ABC):
         is a matrix, represented as a python list of python lists.
 
         Input example:
-            (('PRONAC', 'idSegmento', 'idPlanilhaAprovacao'), '123456')
+            [['PRONAC', 'idPlanilhaAprovacao', 'idSegmento']]
 
         Output example:
             [['123456', '2A', 123],

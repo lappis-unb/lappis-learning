@@ -49,7 +49,4 @@ class Middleware:
         planilha_orcamentaria = self._data_source.get_planilha_orcamentaria(
             use_cache=True)
 
-        from salicml.utils.utils import debug
-        debug('PLANILHA_ORCAMENTARIA')
-        debug(planilha_orcamentaria[:10])
         return planilha_orcamentaria

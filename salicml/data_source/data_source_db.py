@@ -6,7 +6,6 @@ from salicml.data_source.data_source_abc import DataSourceABC
 from salicml.data_source.db_connector import DbConnector
 from salicml.middleware import constants
 from salicml.utils import storage
-from salicml.utils.utils import debug
 
 
 class DataSourceDb(DataSourceABC):
@@ -56,9 +55,7 @@ class DataSourceDb(DataSourceABC):
             sql_query += where
         sql_query += ';'
 
-        debug('Downloading query:\n{}\n'.format(sql_query))
         spreadsheet = self.db_connector.execute_query(sql_query)
-        debug('Download finished')
         return spreadsheet
 
     def get_planilha_orcamentaria(
@@ -72,12 +69,10 @@ class DataSourceDb(DataSourceABC):
             try:
                 spreadsheet = self._read_cache()
                 download = False
-                debug('Cache was read')
             except FileNotFoundError:
-                debug('Cache was not found on {}'.format(DataSourceDb.PATH))
+                pass
 
         if download:
-            debug('Downloading planilha')
             spreadsheet = self.download_planilha_orcamentaria(
                 columns=columns, pronac=pronac)
             storage.save(DataSourceDb.PATH, spreadsheet)

@@ -1,6 +1,5 @@
 import os
 import pickle
-from salicml.utils.utils import debug
 
 
 def save(file_path, data):
@@ -15,10 +14,8 @@ def save(file_path, data):
 def load(file_path, on_error_callback=None):
     try:
         with open(file_path, 'rb') as input_file:
-            debug('Loading file: {}'.format(file_path))
             loaded_object = pickle.load(input_file)
             return loaded_object
     except FileNotFoundError:
-        debug('File not found: {}'.format(file_path))
         if on_error_callback:
             on_error_callback()
