@@ -1,4 +1,5 @@
 import string
+import sys
 
 
 def is_valid_pronac(pronac):
@@ -11,3 +12,9 @@ def is_valid_pronac(pronac):
         if digit not in VALID_DIGITS:
             return False
     return True
+
+
+def debug(message):
+    print('\n')
+    print('{}'.format(message))
+    sys.stdout.flush()

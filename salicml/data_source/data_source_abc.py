@@ -6,7 +6,11 @@ class DataSourceABC(ABC):
     data about SALIC projects from different sources.'''
 
     @abstractmethod
-    def get_planilha_orcamentaria(self, columns, pronac=''):
+    def get_planilha_orcamentaria(
+            self,
+            pronac='',
+            columns=None,
+            use_cache=False):
         '''Returns the budgetary spreadsheet about SALIC projects. The output
         is a matrix, represented as a python list of python lists.
 

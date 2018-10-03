@@ -4,6 +4,7 @@ from salicml.features.number_of_items import FeatureNumberOfItems
 from salicml.metrics.number_of_items import NumberOfItemsModel
 from salicml.middleware.exceptions import TraningNotFound
 from salicml.middleware import constants
+from salicml.utils.utils import debug
 
 
 class NumberOfItemsMiddleware:
@@ -12,7 +13,7 @@ class NumberOfItemsMiddleware:
     NumberOfItems, and makes inference on that feature'''
 
     TRAIN_NUMBER_OF_METRICS_PATH = os.path.join(constants.TRAIN_FOLDER,
-                                                'number_of_metrics.pickle')
+                                                'number_of_items.pickle')
     COLUMNS = ['PRONAC', 'idSegmento', 'idPlanilhaAprovacao', ]
 
     def __init__(self, data_source):
@@ -34,16 +35,21 @@ class NumberOfItemsMiddleware:
         '''Extracts the feature, trains a model on the extracted feature and
         returns the trained model. If save=True, the trained model will also
          be saved as a .picke file'''
-        feature = FeatureNumberOfItems()
+        debug('Started training [Number of Items]')
 
+        feature = FeatureNumberOfItems()
         items_features = feature.get_projects_number_of_items(
             planilha_orcamentaria)
+        debug('Features extracted [Number of Items]')
 
         self.number_of_items.train(items_features)
+        debug('Training [Number of Items]')
 
         if save:
             self.number_of_items.save(
                 NumberOfItemsMiddleware.TRAIN_NUMBER_OF_METRICS_PATH)
+
+        debug('Finished training [Number of Items]')
 
     def get_metric_number_of_items(self, pronac):
         '''Makes inference and calculate the metric number of items for the
@@ -54,6 +60,12 @@ class NumberOfItemsMiddleware:
             columns=NumberOfItemsMiddleware.COLUMNS, pronac=pronac)
         items_features = feature.get_projects_number_of_items(
             planilha_orcamentaria)
+
+        debug('PLANILHA_ORCAMENTARIA')
+        debug(planilha_orcamentaria)
+
+        debug('features')
+        debug(items_features)
 
         _, id_segment, number_of_items = items_features[0]
 

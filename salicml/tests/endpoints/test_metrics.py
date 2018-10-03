@@ -9,11 +9,11 @@ BAD_CODE = 400
 
 
 def get_data_source():
-    planilha_orcamentaria = [['012345', '2A', 123],
-                             ['012345', '2A', 124],
-                             ['012345', '2A', 125],
-                             ['012348', '3A', 126],
-                             ['012348', '3A', 127], ]
+    planilha_orcamentaria = [['012345', 123, '2A'],
+                             ['012345', 124, '2A'],
+                             ['012345', 125, '2A'],
+                             ['012348', 126, '3A'],
+                             ['012348', 127, '3A'], ]
     data_source = DataSourceMock(planilha_orcamentaria=planilha_orcamentaria)
 
     columns = ['0', '1', '2']
@@ -28,11 +28,12 @@ def get_data_source():
 @pytest.fixture
 def client():
     app = salicml.app
-    app.config['TESTING'] = True
 
     data_source = get_data_source()
-    app.middleware = Middleware(data_source=data_source)
-    app.middleware.load_all()
+    middleware = Middleware(data_source=data_source)
+    middleware.load_all()
+
+    app.middleware = middleware
     client = salicml.app.test_client()
 
     yield client  # TearDown code is below, SetUp code is above

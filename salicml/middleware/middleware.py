@@ -1,14 +1,6 @@
-import logging
-import os
-
 from salicml.data_source.data_source_db import DataSourceDb
 from salicml.middleware.number_of_items import NumberOfItemsMiddleware
 from salicml.middleware.exceptions import TraningNotFound
-from salicml.middleware import constants
-from salicml.utils import storage
-
-
-log = logging.getLogger('flask.app.middleware').debug
 
 
 class Middleware:
@@ -21,7 +13,6 @@ class Middleware:
     def __init__(self, data_source=None):
         self._init_data_source(data_source)
         self._init_number_of_items_middleware()
-        log('Initing Middleware\n')
 
     def _init_data_source(self, data_source):
         self._data_source = data_source if data_source else DataSourceDb()
@@ -53,39 +44,12 @@ class Middleware:
         return self.number_of_items_middleware.get_metric_number_of_items(
             pronac)
 
-    def _get_planilha_orcamentaria(self, use_cache=True):
+    def _get_planilha_orcamentaria(self):
         '''Singleton implementation of planilha orcamentaria. '''
-        name = 'planilha_orcamentaria'
-        PLANILHA_ORCAMENTARIA = \
-            os.path.join(constants.TRAIN_FOLDER, name + '.pickle')
+        planilha_orcamentaria = self._data_source.get_planilha_orcamentaria(
+            use_cache=True)
 
-        download = True
-        use_attr = False
-        use_file = False
-
-        if use_cache:
-            use_attr = hasattr(self, name)
-            if not use_attr:
-                use_file = os.path.exists(PLANILHA_ORCAMENTARIA)
-
-            if use_attr or use_file:
-                download = False
-
-        planilha_orcamentaria = None
-
-        if download:
-            log('Downloading {}.'.format(name))
-            planilha_orcamentaria = self._data_source. \
-                get_planilha_orcamentaria(
-                    columns=NumberOfItemsMiddleware.COLUMNS)
-
-            storage.save(PLANILHA_ORCAMENTARIA, planilha_orcamentaria)
-        elif use_attr:
-            log('Loading {} from attr.'.format(name))
-            planilha_orcamentaria = self.planilha_orcamentaria
-        elif use_file:
-            log('Loading {} from pickle.'.format(name))
-            planilha_orcamentaria = storage.load(PLANILHA_ORCAMENTARIA)
-
-        self.planilha_orcamentaria = planilha_orcamentaria
+        from salicml.utils.utils import debug
+        debug('PLANILHA_ORCAMENTARIA')
+        debug(planilha_orcamentaria[:10])
         return planilha_orcamentaria

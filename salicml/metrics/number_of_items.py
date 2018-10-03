@@ -3,6 +3,7 @@ import pandas as pd
 
 from salicml.models import gaussian_outlier
 from salicml.utils import storage
+from salicml.utils.utils import debug
 
 
 class NumberOfItemsModel:
@@ -43,6 +44,7 @@ class NumberOfItemsModel:
 
         segments_groups = items_df.groupby(['id_segmento'])
         for segment, segment_group in segments_groups:
+            debug('Training segment [{}]'.format(segment))
             number_of_items_array = segment_group.number_of_items.values
             segment_trained = self._train_segment(number_of_items_array)
 
@@ -51,6 +53,8 @@ class NumberOfItemsModel:
     def is_outlier(self, number_of_items, id_segment):
         '''Returns wheter the given number of items is an outlier for the given
         segment. '''
+        assert self.segments_trained is not None
+
         segment_mean = \
             self.segments_trained[id_segment][NumberOfItemsModel.MEAN_KEY]
         segment_std = \
