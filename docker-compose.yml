@@ -17,6 +17,7 @@ services:
       - DB_PORT=
       - DB_USER=
       - DB_PASSWORD=
+      - SALICML_PRODUCTION=True
     ports:
       - '8080:8080'
 
