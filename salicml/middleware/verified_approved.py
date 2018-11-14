@@ -39,10 +39,24 @@ class VerifiedApprovedMiddleware:
         pronac_features = \
             feature.get_features(planilha_aprovacao_comprovacao_pronac)
 
-        features_size = pronac_features.shape[0]
-        outlier_items = list(pronac_features[ITEM_NAME_COLUMN])
+        result = self.prepare_json(pronac_features)
+        return result
+
+    def prepare_json(self, features):
+        features_size = features.shape[0]
         result = {
             'number_of_outliers': features_size,
-            'outlier_items': outlier_items,
+            'outlier_items': {},
         }
+
+        for row in features.itertuples():
+            item_name = getattr(row, 'Item')
+            approved_value = getattr(row, 'vlAprovado')
+            verified_value = getattr(row, 'vlComprovacao')
+
+            item = {
+                'approved_value': approved_value,
+                'verified_value': verified_value,
+            }
+            result['outlier_items'][item_name] = item
         return result

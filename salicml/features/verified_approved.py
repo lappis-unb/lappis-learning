@@ -51,6 +51,8 @@ class VerifiedApprovedFeature:
         items_df.columns = items_df.iloc[0].values
         items_df = items_df[1:]
         items_df = items_df[COLUMNS]
+        items_df[[APPROVED_COLUMN, VERIFIED_COLUMN]] = \
+            items_df[[APPROVED_COLUMN, VERIFIED_COLUMN]].astype(float)
 
         THRESHOLD = 1.5
         bigger_than_approved = items_df[VERIFIED_COLUMN] > \

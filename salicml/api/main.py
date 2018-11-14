@@ -19,6 +19,7 @@ class CustomJSONEncoder(JSONEncoder):
 
 
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
 app.json_encoder = CustomJSONEncoder
 
 is_production = os.environ.get('SALICML_PRODUCTION', False)
@@ -41,9 +42,7 @@ def get_metric_number_of_items(pronac):
 def get_metric_verified_vs_approved(pronac):
     if is_valid_pronac(pronac):
         middleware = app.middleware
-        result_middlware = middleware.get_metric_verified_approved(pronac)
-        result = {'verified_vs_approved': 0,
-                  'result_middleware': result_middlware}
+        result = middleware.get_metric_verified_approved(pronac)
         return jsonify(result), 200
     else:
         INVALID_PRONAC_MESSAGE = 'Invalid PRONAC'
