@@ -1,5 +1,6 @@
 from salicml.data_source.data_source_db import DataSourceDb
 from salicml.middleware.number_of_items import NumberOfItemsMiddleware
+from salicml.middleware.verified_approved import VerifiedApprovedMiddleware
 from salicml.middleware.exceptions import TraningNotFound
 
 
@@ -12,7 +13,7 @@ class Middleware:
 
     def __init__(self, data_source=None):
         self._init_data_source(data_source)
-        self._init_number_of_items_middleware()
+        self._init_all_middlewares()
 
     def _init_data_source(self, data_source):
         self._data_source = data_source if data_source else DataSourceDb()
@@ -44,9 +45,20 @@ class Middleware:
         return self.number_of_items_middleware.get_metric_number_of_items(
             pronac)
 
+    def get_metric_verified_approved(self, pronac):
+        return self.verified_approved_middleware.get_metric_verified_approved(pronac)
+
     def _get_planilha_orcamentaria(self):
         '''Singleton implementation of planilha orcamentaria. '''
         planilha_orcamentaria = self._data_source.get_planilha_orcamentaria(
             use_cache=True)
 
         return planilha_orcamentaria
+
+    def _init_all_middlewares(self):
+        self._init_number_of_items_middleware()
+        self._init_verified_approved_middleware()
+
+    def _init_verified_approved_middleware(self):
+        self.verified_approved_middleware = VerifiedApprovedMiddleware()
+

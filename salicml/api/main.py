@@ -1,4 +1,5 @@
 import os
+import logging
 
 import numpy
 from flask import Flask, jsonify
@@ -31,6 +32,18 @@ def get_metric_number_of_items(pronac):
     if is_valid_pronac(pronac):
         middleware = app.middleware
         result = middleware.get_metric_number_of_items(pronac)
+        return jsonify(result), 200
+    else:
+        INVALID_PRONAC_MESSAGE = 'Invalid PRONAC'
+        return jsonify(INVALID_PRONAC_MESSAGE), 400
+
+@app.route('/metric/verified_approved/<string:pronac>', methods=['GET'])
+def get_metric_verified_vs_approved(pronac):
+    if is_valid_pronac(pronac):
+        middleware = app.middleware
+        result_middlware = middleware.get_metric_verified_approved(pronac)
+        result = {'verified_vs_approved': 0,
+                  'result_middleware': result_middlware}
         return jsonify(result), 200
     else:
         INVALID_PRONAC_MESSAGE = 'Invalid PRONAC'

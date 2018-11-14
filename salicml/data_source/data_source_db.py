@@ -2,11 +2,56 @@ import pandas as pd
 
 import os
 
-from salicml.data_source.data_source_abc import DataSourceABC
+from abc import ABC, abstractmethod
 from salicml.data_source.db_connector import DbConnector
 from salicml.middleware import constants
 from salicml.utils import storage
 
+
+class VerifiedApprovedDataSource:
+    SQL_NAME = 'planilha_aprovacao_comprovacao.sql'
+    SQL_PATH = os.path.join(constants.SQL_FOLDER, SQL_NAME)
+
+    def __init__(self):
+        with open(VerifiedApprovedDataSource.SQL_PATH, 'r') as sql_file:
+            self.sql = sql_file.read()
+        self.db_connector = DbConnector()
+
+    def download_dataset(self, pronac=None):
+        if pronac is None:
+            query = self.sql
+        else:
+            where_pronac = ' AND (projetos.AnoProjeto + projetos.Sequencial)' \
+                '= {};'.format(pronac)
+            query = self.sql.replace(';', where_pronac)
+
+        dataset = self.db_connector.execute_query(query)
+        return dataset
+
+
+class DataSourceABC(ABC):
+    '''This class defines the interface that is responsable for getting raw
+    data about SALIC projects from different sources.'''
+
+    @abstractmethod
+    def get_planilha_orcamentaria(
+            self,
+            pronac='',
+            columns=None,
+            use_cache=False):
+        '''Returns the budgetary spreadsheet about SALIC projects. The output
+        is a matrix, represented as a python list of python lists.
+
+        Input example:
+            [['PRONAC', 'idPlanilhaAprovacao', 'idSegmento']]
+
+        Output example:
+            [['123456', '2A', 123],
+             ['123456', '2A', 124],
+             ['123457', 'AA', 323],
+             ['123458', 'XY', 923], ]
+        '''
+        pass
 
 class DataSourceDb(DataSourceABC):
     PATH = os.path.join(constants.TRAIN_FOLDER, 'planilha_orcamentaria.pickle')
@@ -97,3 +142,29 @@ class DataSourceMock(DataSourceABC):
             spreadsheet = df
         spreadsheet = spreadsheet.values.tolist()
         return spreadsheet
+
+
+
+class DataSourceABC(ABC):
+    '''This class defines the interface that is responsable for getting raw
+    data about SALIC projects from different sources.'''
+
+    @abstractmethod
+    def get_planilha_orcamentaria(
+            self,
+            pronac='',
+            columns=None,
+            use_cache=False):
+        '''Returns the budgetary spreadsheet about SALIC projects. The output
+        is a matrix, represented as a python list of python lists.
+
+        Input example:
+            [['PRONAC', 'idPlanilhaAprovacao', 'idSegmento']]
+
+        Output example:
+            [['123456', '2A', 123],
+             ['123456', '2A', 124],
+             ['123457', 'AA', 323],
+             ['123458', 'XY', 923], ]
+        '''
+        pass
