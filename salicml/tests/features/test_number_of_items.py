@@ -33,4 +33,4 @@ class TestFeatureNumberOfItems(unittest.TestCase):
         self.assertEqual(len(pronacs_features), 2)
 
         expected_result = [['012345', '2A', 3], ['012348', '3A', 2], ]
-        self.assertEquals(pronacs_features, expected_result)
+        self.assertEqual(pronacs_features, expected_result)
