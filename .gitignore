@@ -1,5 +1,5 @@
 ### Salic-ML files
-salicml/trainings/
+**.pickle
 
 ### Data files maintained by FTP server
 data/external/*
