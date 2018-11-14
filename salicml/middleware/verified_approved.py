@@ -1,32 +1,26 @@
 import os
 
-from salicml.middleware.exceptions import TraningNotFound
 from salicml.middleware import constants
-from salicml.metrics.verified_approved import VerifiedApprovedModel
 from salicml.data_source.data_source_db import VerifiedApprovedDataSource
 from salicml.features.verified_approved import VerifiedApprovedFeature
 
 
 TRAIN_FILE_NAME = 'verified_approved.pickle'
 TRAIN_NUMBER_OF_METRICS_PATH = os.path.join(constants.TRAIN_FOLDER,
-                            TRAIN_FILE_NAME)
+                                            TRAIN_FILE_NAME)
 ITEM_NAME_COLUMN = 'Item'
+MIN_EXPECTED_ITEMS = 0
+MAX_EXPECTED_ITEMS = 0
 
 
 class VerifiedApprovedMiddleware:
-    '''This class is a middleware specialist in the metric NumberOfItems.
-    It gets all necessary raw data from DataSource, extracts the feature
-    NumberOfItems, and makes inference on that feature'''
+    '''This class is a middleware specialist in the metric
+    Verified vs Approved metric. It gets all necessary raw data from
+    DataSource, extracts the feature related features, and makes inference on
+    set of features'''
 
     def __init__(self):
         self._data_source = VerifiedApprovedDataSource()
-        self.verified_approved_model = VerifiedApprovedModel()
-
-    def train_number_of_items(self, planilha_orcamentaria, save=True):
-        '''Extracts the feature, trains a model on the extracted feature and
-        returns the trained model. If save=True, the trained model will also
-         be saved as a .picke file'''
-        feature = VerifiedApprovedFeature()
 
     def get_metric_verified_approved(self, pronac):
         '''Makes inference and calculate the metric number of items for the
@@ -44,10 +38,15 @@ class VerifiedApprovedMiddleware:
 
     def prepare_json(self, features):
         features_size = features.shape[0]
+        is_outlier = features_size > 0
         result = {
+            'is_outlier': is_outlier,
             'number_of_outliers': features_size,
-            'outlier_items': {},
+            'minimum_expected': MIN_EXPECTED_ITEMS,
+            'maximum_expected': MAX_EXPECTED_ITEMS,
         }
+
+        outlier_items = []
 
         for row in features.itertuples():
             item_name = getattr(row, 'Item')
@@ -55,8 +54,10 @@ class VerifiedApprovedMiddleware:
             verified_value = getattr(row, 'vlComprovacao')
 
             item = {
+                'item': item_name,
                 'approved_value': approved_value,
                 'verified_value': verified_value,
             }
-            result['outlier_items'][item_name] = item
+            outlier_items.append(item)
+        result['outlier_items'] = outlier_items
         return result

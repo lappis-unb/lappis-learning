@@ -53,6 +53,7 @@ class DataSourceABC(ABC):
         '''
         pass
 
+
 class DataSourceDb(DataSourceABC):
     PATH = os.path.join(constants.TRAIN_FOLDER, 'planilha_orcamentaria.pickle')
 
@@ -142,7 +143,6 @@ class DataSourceMock(DataSourceABC):
             spreadsheet = df
         spreadsheet = spreadsheet.values.tolist()
         return spreadsheet
-
 
 
 class DataSourceABC(ABC):

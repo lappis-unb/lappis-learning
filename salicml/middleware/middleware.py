@@ -46,7 +46,8 @@ class Middleware:
             pronac)
 
     def get_metric_verified_approved(self, pronac):
-        return self.verified_approved_middleware.get_metric_verified_approved(pronac)
+        return self.verified_approved_middleware.get_metric_verified_approved(
+            pronac)
 
     def _get_planilha_orcamentaria(self):
         '''Singleton implementation of planilha orcamentaria. '''
@@ -61,4 +62,3 @@ class Middleware:
 
     def _init_verified_approved_middleware(self):
         self.verified_approved_middleware = VerifiedApprovedMiddleware()
-

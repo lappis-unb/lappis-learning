@@ -1,5 +1,4 @@
 import pandas as pd
-import sys
 
 from flask import current_app as app
 
@@ -9,9 +8,11 @@ COLUMNS = ['PRONAC', 'idPlanilhaAprovacao', 'Item', 'idSegmento', 'vlAprovado',
 VERIFIED_COLUMN = 'vlComprovacao'
 APPROVED_COLUMN = 'vlAprovado'
 
+
 def log(message):
     with app.app_context():
         app.logger.info(message)
+
 
 class VerifiedApprovedFeature:
 
@@ -53,10 +54,15 @@ class VerifiedApprovedFeature:
         items_df = items_df[COLUMNS]
         items_df[[APPROVED_COLUMN, VERIFIED_COLUMN]] = \
             items_df[[APPROVED_COLUMN, VERIFIED_COLUMN]].astype(float)
+        items_df['Item'] = items_df['Item'].str.replace('\r', '')
+        items_df['Item'] = items_df['Item'].str.replace('\n', '')
+        items_df['Item'] = items_df['Item'].str.replace('\"', '')
+        items_df['Item'] = items_df['Item'].str.replace('\'', '')
+        items_df['Item'] = items_df['Item'].str.replace('\\', '')
 
         THRESHOLD = 1.5
         bigger_than_approved = items_df[VERIFIED_COLUMN] > \
-                               (items_df[APPROVED_COLUMN] * THRESHOLD)
+            (items_df[APPROVED_COLUMN] * THRESHOLD)
         features = items_df[bigger_than_approved]
         return features
 
