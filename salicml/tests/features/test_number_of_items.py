@@ -9,15 +9,15 @@ class TestFeatureNumberOfItems(unittest.TestCase):
     def setUpClass(cls):
         super().setUpClass()
 
-        cls.projects_items = [['012345', '2A', 123],
-                              ['012345', '2A', 124],
-                              ['012345', '2A', 125],
-                              ['012348', '3A', 126],
-                              ['012348', '3A', 127], ]
+        cls.projects_items = [['012345', 123, '2A'],
+                              ['012345', 124, '2A'],
+                              ['012345', 125, '2A'],
+                              ['012348', 126, '3A'],
+                              ['012348', 127, '3A'], ]
 
-        cls.pronac_items = [['012345', '2A', 123],
-                            ['012345', '2A', 124],
-                            ['012345', '2A', 125], ]
+        cls.pronac_items = [['012345', 123, '2A'],
+                            ['012345', 124, '2A'],
+                            ['012345', 125, '2A'], ]
 
     def test_get_one_pronac_number_of_items(self):
         feature = FeatureNumberOfItems()

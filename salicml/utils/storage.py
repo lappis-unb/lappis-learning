@@ -15,9 +15,7 @@ def load(file_path, on_error_callback=None):
     try:
         with open(file_path, 'rb') as input_file:
             loaded_object = pickle.load(input_file)
-
-        return loaded_object
-
-    except BaseException:
+            return loaded_object
+    except FileNotFoundError:
         if on_error_callback:
             on_error_callback()

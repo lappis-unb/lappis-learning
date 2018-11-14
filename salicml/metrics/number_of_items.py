@@ -51,6 +51,8 @@ class NumberOfItemsModel:
     def is_outlier(self, number_of_items, id_segment):
         '''Returns wheter the given number of items is an outlier for the given
         segment. '''
+        assert self.segments_trained is not None
+
         segment_mean = \
             self.segments_trained[id_segment][NumberOfItemsModel.MEAN_KEY]
         segment_std = \

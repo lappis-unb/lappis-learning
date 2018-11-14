@@ -1,11 +1,11 @@
-import logging
-import sys
+import os
 
 import numpy
 from flask import Flask, jsonify
 from flask.json import JSONEncoder
 
 from salicml.middleware.middleware import Middleware
+from salicml.utils.utils import is_valid_pronac
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -19,17 +19,19 @@ class CustomJSONEncoder(JSONEncoder):
 
 app = Flask(__name__)
 app.json_encoder = CustomJSONEncoder
-app.config['JSON_AS_ASCII'] = False
 
-handler = logging.StreamHandler(sys.stdout)
-app.logger.addHandler(handler)
-app.logger.setLevel(logging.DEBUG)
-
-middleware = Middleware()
-middleware.load_all()
+is_production = os.environ.get('SALICML_PRODUCTION', False)
+if is_production:
+    app.middleware = Middleware()
+    app.middleware.load_all()
 
 
-@app.route('/metric/number_of_items/<int:pronac>', methods=['GET'])
+@app.route('/metric/number_of_items/<string:pronac>', methods=['GET'])
 def get_metric_number_of_items(pronac):
-    result = middleware.get_metric_number_of_items(pronac)
-    return jsonify(result), 200
+    if is_valid_pronac(pronac):
+        middleware = app.middleware
+        result = middleware.get_metric_number_of_items(pronac)
+        return jsonify(result), 200
+    else:
+        INVALID_PRONAC_MESSAGE = 'Invalid PRONAC'
+        return jsonify(INVALID_PRONAC_MESSAGE), 400

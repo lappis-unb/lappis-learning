@@ -19,12 +19,12 @@ class FeatureNumberOfItems:
 
         Input example:
 
-        [['012345', '2A', 123],
-         ['012345', '2A', 124],
-         ['012345', '2A', 125],
-         ['012348', '3A', 126],
-         ['012348', '3A', 127],
-         ['012350', '4D', 128], ]
+        [['012345', 123, 'A1'],
+         ['012345', 124, 'A1'],
+         ['012345', 125, 'A1'],
+         ['012348', 126, 'A2'],
+         ['012348', 127, 'A2'],
+         ['012350', 128, 'A3'], ]
 
 
         Output example:
@@ -39,14 +39,16 @@ class FeatureNumberOfItems:
         SEGMENT = 'id_segmento'
         ID = 'id_planilha_aprovacao'
         NUMBER_OF_ITEMS = 'number_of_items'
-        COLUMNS = [PRONAC, SEGMENT, ID]
+        COLUMNS = [PRONAC, ID, SEGMENT]
 
         items_df = pd.DataFrame(items, columns=COLUMNS)
 
-        pronacs_group = items_df.groupby(COLUMNS[:2]).count()
+        pronacs_group = items_df.groupby(by=[PRONAC, SEGMENT]).count()
         pronacs_group.rename(columns={ID: NUMBER_OF_ITEMS}, inplace=True)
         pronacs_group.reset_index(inplace=True)
-        return pronacs_group.values.tolist()
+
+        features = pronacs_group.values.tolist()
+        return features
 
     def get_pronac_number_of_items(self, items):
         '''Receives budgetary items of a SALIC project in a matrix form as input

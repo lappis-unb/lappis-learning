@@ -12,7 +12,7 @@ class NumberOfItemsMiddleware:
     NumberOfItems, and makes inference on that feature'''
 
     TRAIN_NUMBER_OF_METRICS_PATH = os.path.join(constants.TRAIN_FOLDER,
-                                                'number_of_metrics.pickle')
+                                                'number_of_items.pickle')
     COLUMNS = ['PRONAC', 'idSegmento', 'idPlanilhaAprovacao', ]
 
     def __init__(self, data_source):
@@ -35,7 +35,6 @@ class NumberOfItemsMiddleware:
         returns the trained model. If save=True, the trained model will also
          be saved as a .picke file'''
         feature = FeatureNumberOfItems()
-
         items_features = feature.get_projects_number_of_items(
             planilha_orcamentaria)
 
@@ -50,9 +49,8 @@ class NumberOfItemsMiddleware:
         given pronac. The pronac's data will downloaded from the SALIC database
         so its guaranted to be up-to-date.'''
         feature = FeatureNumberOfItems()
-        where = 'WHERE a.PRONAC = \'{0}\''.format(pronac)
         planilha_orcamentaria = self._data_source.get_planilha_orcamentaria(
-            columns=NumberOfItemsMiddleware.COLUMNS, where=where)
+            columns=NumberOfItemsMiddleware.COLUMNS, pronac=pronac)
         items_features = feature.get_projects_number_of_items(
             planilha_orcamentaria)
 
