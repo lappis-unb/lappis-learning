@@ -16,13 +16,6 @@ def get_data_source():
                              ['012348', 127, '3A'], ]
     data_source = DataSourceMock(planilha_orcamentaria=planilha_orcamentaria)
 
-    columns = ['0', '1', '2']
-
-    print(
-        'data_source.planilha = {}'.format(
-            data_source.get_planilha_orcamentaria(
-                columns=columns)))
-
     set_planilha_aprovacao_comprovacao(data_source)
     return data_source
 
@@ -30,10 +23,10 @@ def get_data_source():
 def set_planilha_aprovacao_comprovacao(data_source):
     NEEDED_COLUMNS = ['PRONAC', 'Item', 'vlAprovado', 'vlComprovacao']
     DATASET = [NEEDED_COLUMNS,
-               ['123456', 'Coca cola', 100, 120],
-               ['123456', 'Coca cola', 100, 200],
-               ['123456', 'Coca cola zero', 100, 70],
-               ['123456', 'Coca cola zero', 100, 100],
+               ['123456', 'Coca cola', 100, 149],
+               ['123456', 'Coca cola', 100, 150],
+               ['123456', 'Coca cola zero', 100, 151],
+               ['123456', 'Coca cola zero', 100, 152],
                ['123457', 'Mouse', 100, 50],
                ['123458', 'Teclado', 10, 3],
                ]
@@ -98,3 +91,18 @@ def test_verified_approved_endpoint_keys(client):
         assert key in result
 
     assert len(result) == len(expected_keys)
+
+
+def test_verified_approved_endpoint_values(client):
+    ''''''
+    pronac = '123456'
+    endpoint = 'metric/verified_approved/{}'.format(pronac)
+
+    response = client.get(endpoint)
+    data = response.get_json()
+
+    assert response.status_code == OK_CODE
+    assert data['is_outlier']
+    assert data['maximum_expected'] == 0
+    assert data['minimum_expected'] == 0
+    assert data['number_of_outliers'] == 2

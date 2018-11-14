@@ -1,7 +1,6 @@
 import os
 
 from salicml.middleware import constants
-from salicml.data_source.data_source_db import VerifiedApprovedDataSource
 from salicml.features.verified_approved import VerifiedApprovedFeature
 
 
