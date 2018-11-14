@@ -61,4 +61,5 @@ class Middleware:
         self._init_verified_approved_middleware()
 
     def _init_verified_approved_middleware(self):
-        self.verified_approved_middleware = VerifiedApprovedMiddleware()
+        self.verified_approved_middleware = \
+            VerifiedApprovedMiddleware(self._data_source)

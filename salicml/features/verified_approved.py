@@ -45,10 +45,14 @@ class VerifiedApprovedFeature:
          ['012350', 'Lambo', 128, 1000], ]
         '''
 
-        items_df = pd.DataFrame(items_dataset)
-        items_df.columns = items_df.iloc[0].values
-        items_df = items_df[1:]
-        items_df = items_df[COLUMNS]
+        if isinstance(items_dataset, list):
+            items_df = pd.DataFrame(items_dataset)
+            items_df.columns = items_df.iloc[0].values
+            items_df = items_df[1:]
+            items_df = items_df[COLUMNS]
+        else:
+            items_df = items_dataset.copy()
+
         items_df[[APPROVED_COLUMN, VERIFIED_COLUMN]] = \
             items_df[[APPROVED_COLUMN, VERIFIED_COLUMN]].astype(float)
         items_df['Item'] = items_df['Item'].str.replace('\r', '')

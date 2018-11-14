@@ -1,5 +1,4 @@
 import pandas as pd
-
 import os
 
 from abc import ABC, abstractmethod
@@ -53,6 +52,10 @@ class DataSourceABC(ABC):
         '''
         pass
 
+    @abstractmethod
+    def get_planilha_aprovacao_comprovacao(self, pronac=None):
+        pass
+
 
 class DataSourceDb(DataSourceABC):
     PATH = os.path.join(constants.TRAIN_FOLDER, 'planilha_orcamentaria.pickle')
@@ -68,6 +71,10 @@ class DataSourceDb(DataSourceABC):
 
     def no_cache_callback(self):
         raise FileNotFoundError('No file {}'.format(DataSourceDb.PATH))
+
+    def get_planilha_aprovacao_comprovacao(self, pronac=None):
+        verified_approved_datasource = VerifiedApprovedDataSource()
+        return verified_approved_datasource.download_dataset(pronac=pronac)
 
     def download_planilha_orcamentaria(self, columns=None, pronac=''):
         ''''Returns [[PRONAC, id_planilha_aprovacao, id_segmento]]'''
@@ -144,27 +151,17 @@ class DataSourceMock(DataSourceABC):
         spreadsheet = spreadsheet.values.tolist()
         return spreadsheet
 
+    def set_planilha_aprovacao_comprovacao(self, dataset):
 
-class DataSourceABC(ABC):
-    '''This class defines the interface that is responsable for getting raw
-    data about SALIC projects from different sources.'''
+        items_df = pd.DataFrame(dataset)
+        items_df.columns = items_df.iloc[0].values
+        items_df = items_df[1:]
+        self.planilha_aprovacao_comprovacao = items_df
 
-    @abstractmethod
-    def get_planilha_orcamentaria(
-            self,
-            pronac='',
-            columns=None,
-            use_cache=False):
-        '''Returns the budgetary spreadsheet about SALIC projects. The output
-        is a matrix, represented as a python list of python lists.
-
-        Input example:
-            [['PRONAC', 'idPlanilhaAprovacao', 'idSegmento']]
-
-        Output example:
-            [['123456', '2A', 123],
-             ['123456', '2A', 124],
-             ['123457', 'AA', 323],
-             ['123458', 'XY', 923], ]
-        '''
-        pass
+    def get_planilha_aprovacao_comprovacao(self, pronac=None):
+        if pronac is None:
+            result = self.planilha_aprovacao_comprovacao
+        else:
+            df = self.planilha_aprovacao_comprovacao
+            result = df[df['PRONAC'] == pronac]
+        return result

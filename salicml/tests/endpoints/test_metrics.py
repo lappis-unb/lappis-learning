@@ -22,7 +22,22 @@ def get_data_source():
         'data_source.planilha = {}'.format(
             data_source.get_planilha_orcamentaria(
                 columns=columns)))
+
+    set_planilha_aprovacao_comprovacao(data_source)
     return data_source
+
+
+def set_planilha_aprovacao_comprovacao(data_source):
+    NEEDED_COLUMNS = ['PRONAC', 'Item', 'vlAprovado', 'vlComprovacao']
+    DATASET = [NEEDED_COLUMNS,
+               ['123456', 'Coca cola', 100, 120],
+               ['123456', 'Coca cola', 100, 200],
+               ['123456', 'Coca cola zero', 100, 70],
+               ['123456', 'Coca cola zero', 100, 100],
+               ['123457', 'Mouse', 100, 50],
+               ['123458', 'Teclado', 10, 3],
+               ]
+    data_source.set_planilha_aprovacao_comprovacao(DATASET)
 
 
 @pytest.fixture
@@ -64,3 +79,22 @@ def test_number_of_items_endpoint_invalid_pronac(client):
     endpoint = 'metric/number_of_items/{}'.format(pronac)
     response = client.get(endpoint)
     assert response.status_code == BAD_CODE
+
+
+def test_verified_approved_endpoint_keys(client):
+    ''''''
+    pronac = '123456'
+    endpoint = 'metric/verified_approved/{}'.format(pronac)
+
+    response = client.get(endpoint)
+    result = response.json
+
+    assert response.status_code == OK_CODE
+
+    expected_keys = ['is_outlier', 'maximum_expected', 'minimum_expected',
+                     'number_of_outliers', 'outlier_items']
+
+    for key in expected_keys:
+        assert key in result
+
+    assert len(result) == len(expected_keys)

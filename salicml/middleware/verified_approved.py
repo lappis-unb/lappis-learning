@@ -19,8 +19,8 @@ class VerifiedApprovedMiddleware:
     DataSource, extracts the feature related features, and makes inference on
     set of features'''
 
-    def __init__(self):
-        self._data_source = VerifiedApprovedDataSource()
+    def __init__(self, data_source):
+        self._data_source = data_source
 
     def get_metric_verified_approved(self, pronac):
         '''Makes inference and calculate the metric number of items for the
@@ -29,7 +29,7 @@ class VerifiedApprovedMiddleware:
         feature = VerifiedApprovedFeature()
 
         planilha_aprovacao_comprovacao_pronac = \
-            self._data_source.download_dataset(pronac=pronac)
+            self._data_source.get_planilha_aprovacao_comprovacao(pronac=pronac)
         pronac_features = \
             feature.get_features(planilha_aprovacao_comprovacao_pronac)
 
